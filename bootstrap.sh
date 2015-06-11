@@ -22,7 +22,7 @@ apt-get -q=2 install -y build-essential curl git libdb-dev maven2 openjdk-7-jdk 
 
 # install mosh
 echo "Installing mosh..."
-add-apt-repository ppa:keithw/mosh -y
+add-apt-repository ppa:keithw/mosh -y --force-yes
 apt-get update
 apt-get install -y mosh
 
