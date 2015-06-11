@@ -31,7 +31,7 @@ Pages of particular note:
 * [Guide to using the Web UI](https://webarchive.jira.com/wiki/display/Heritrix/Web-based+User+Interface)
 * [Running your first crawl job](https://webarchive.jira.com/wiki/display/Heritrix/A+Quick+Guide+to+Running+Your+First+Crawl+Job)
 
-Notes/errata:
+Notes/errata on the Heritrix configuration:
 * configuration file needs to be edited for each job
   located in `/opt/heritrix-3.2.0/jobs/JOBNAME/crawler-beans.cxml`.
   At the very least you must:
@@ -39,3 +39,10 @@ Notes/errata:
   * add some URLs to crawl in the `props` array under `longerOverrides`
 * the config file is NOT editable via the web UI (as the documentation implies),
   you must `ssh` in and edit it using a text editor (`vim`, `nano`, etc.)
+
+Notes/errata on the OpenWayback configuration:
+* the provided OpenWayback config is set to look in the following two
+  directories for warc-files. So use the job-names `job1` and `job2` when
+  creating test jobs.
+  * /opt/heritrix-3.2.0/jobs/job1
+  * /opt/heritrix-3.2.0/jobs/job2
