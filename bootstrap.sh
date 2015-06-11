@@ -17,14 +17,14 @@ echo "$IPADDR wayback" >> /etc/hosts
 
 # install packages and stuff
 echo "Updating/installing packages..."
-apt-get -q=2 update
-apt-get -q=2 install -y build-essential curl git libdb-dev maven2 openjdk-7-jdk python-software-properties tomcat7 tomcat7-docs tomcat7-admin tomcat7-examples vim w3m elinks screen # default-jdk
+apt-get -q=2 update > /dev/null 2>&1
+apt-get -q=2 install -y curl openjdk-7-jdk python-software-properties screen tomcat7 tomcat7-admin vim > /dev/null 2>&1
 
 # install mosh
 echo "Installing mosh..."
 echo "" | add-apt-repository ppa:keithw/mosh
-apt-get update
-apt-get install -y mosh
+apt-get update > /dev/null 2>&1
+apt-get install -y mosh > /dev/null 2>&1
 
 # download heritrix
 echo "Downloading Heritrix..."
