@@ -70,10 +70,7 @@ sleep 10
 echo "Setting up Heritrix job..."
 curl -qso /dev/null -d "createpath=crawler&action=create" -k -u admin:password --anyauth --location https://localhost:8443/engine
 echo "Configuring Heritrix job..."
-sed -i.bak -e 's/\(metadata.operatorContactUrl=\).*/\1http:\/\/vctlabs.com\//' -e '/URLS HERE/a\
-http://otakunopodcast.com\
-http://donaldburr.com\
-http://vctlabs.com' -e '/example.example\/example/d' -e '/WARCWriterProcessor/a\
+sed -i.bak -e 's/\(metadata.operatorContactUrl=\).*/\1http:\/\/vctlabs.com\//' -e '/URLS HERE/ r /vagrant/URLS_TO_CRAWL' -e '/example.example\/example/d' -e '/WARCWriterProcessor/a\
 \<property name=\"directory\" value=\"\/var\/spool\/heritrix\/\" \/\>' /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
 mkdir -p /var/spool/heritrix
 chown vagrant:vagrant /var/spool/heritrix
