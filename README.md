@@ -1,8 +1,13 @@
-# Heritrix Vagrant Appliance
+# Web Archiving Appliance Proof-of-Concept
 
 ## What is this?
 
-## Heritrix documentation
+This is a proof-of-concept of a Web Archiving appliance. It will archive
+(crawl) sites of your choosing, and will allow you to browse them "wayback
+machine" style. It uses Heritrix for the crawling/archiving and openwayback
+for the browsing.
+
+## Heritrix documentation notes
 
 https://webarchive.jira.com/wiki/display/Heritrix/Heritrix+3.0+and+3.1+User+Guide
 
