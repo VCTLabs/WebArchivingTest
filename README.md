@@ -7,6 +7,11 @@ This is a proof-of-concept of a Web Archiving appliance. It will archive
 machine" style. It uses Heritrix for the crawling/archiving and openwayback
 for the browsing.
 
+## How do I use this?
+
+This is packaged in the form of a ready-to-run [Vagrant](https://www.vagrantup.com) instance.
+Simply install Vagrant, and type `vagrant up` while in this directory.
+
 ## Heritrix documentation notes
 
 The main Heritrix documentation can be found
