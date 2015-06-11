@@ -28,12 +28,13 @@ apt-get install -y mosh
 
 # download heritrix
 echo "Downloading Heritrix..."
-cd /tmp
-wget --no-verbose http://builds.archive.org/maven2/org/archive/heritrix/heritrix/3.2.0/heritrix-3.2.0-dist.tar.gz
-wget --no-verbose http://builds.archive.org/maven2/org/archive/heritrix/heritrix/3.2.0/heritrix-3.2.0-dist.tar.gz.sha1
+mkdir -p /tmp/setup.$$
+cd /tmp/setup.$$
+wget --no-verbose -O /tmp/setup.$$/heritrix-3.2.0-dist.tar.gz http://builds.archive.org/maven2/org/archive/heritrix/heritrix/3.2.0/heritrix-3.2.0-dist.tar.gz
+wget --no-verbose -O /tmp/setup.$$/SHA1SUM http://builds.archive.org/maven2/org/archive/heritrix/heritrix/3.2.0/heritrix-3.2.0-dist.tar.gz.sha1
 #http://builds.archive.org/maven2/org/archive/heritrix/heritrix/3.2.0/heritrix-3.2.0-src.tar.gz
 #http://builds.archive.org/maven2/org/archive/heritrix/heritrix/3.2.0/heritrix-3.2.0-src.tar.gz.sha1
-if ! sha1verify "heritrix-3.2.0-dist.tar.gz" "`cat heritrix-3.2.0-dist.tar.gz.sha1`"; then
+if ! sha1verify "/tmp/setup.$$/heritrix-3.2.0-dist.tar.gz" "`cat /tmp/setup.$$/SHA1SUM`"; then
   echo "ERROR: download failed! (checksum mismatch)"
   exit 1
 fi
@@ -41,7 +42,7 @@ fi
 # install heritrix
 echo "Installing Heritrix..."
 mkdir -p /opt
-tar -C /opt -xzf /tmp/heritrix-3.2.0-dist.tar.gz
+tar -C /opt -xzf /tmp/setup.$$/heritrix-3.2.0-dist.tar.gz
 chmod 755 /opt/heritrix-3.2.0/bin/heritrix
 cat << _EOF_PROFILE_SH_ > /etc/profile.d/heritrix.sh
 export PATH=$PATH:/opt/heritrix-3.2.0/bin
@@ -75,8 +76,8 @@ http://donaldburr.com\
 http://vctlabs.com' -e '/example.example\/example/d' -e '/WARCWriterProcessor/a\
 \<property name=\"directory\" value=\"\/var\/spool\/heritrix\/\" \/\>' /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
 mkdir -p /var/spool/heritrix
-chown root:root /var/spool/heritrix
-chmod 777 /var/spool/heritrix
+chown vagrant:vagrant /var/spool/heritrix
+chmod 755 /var/spool/heritrix
 echo "Building job configuration..."
 curl -qso /dev/null -d "action=build" -k -u admin:admin --anyauth --location https://localhost:8443/engine/job/crawler
 echo "Launching job..."
@@ -94,19 +95,13 @@ sed -i.bak -e '/Host name=/{N;N;s/$/\n\<Alias\>wayback\<\/Alias\>/}' /etc/tomcat
 sed -i.bak -e '/<tomcat-users>/a<user username="admin" password="password" roles="manager-gui,admin-gui"/>' /etc/tomcat7/tomcat-users.xml
 
 # install openwayback
-# using maven overlay
-#cd /tmp && git clone https://github.com/VCTLabs/openwayback-sample-overlay.git
-#cd openwayback-sample-overlay && mvn install
-# using tar file
 echo "Downloading OpenWayback..."
-cd /tmp
-wget --no-verbose -O openwayback-dist-2.2.0.tar.gz http://search.maven.org/remotecontent?filepath=org/netpreserve/openwayback/openwayback-dist/2.2.0/openwayback-dist-2.2.0.tar.gz
+wget --no-verbose -O /tmp/setup.$$/openwayback-dist-2.2.0.tar.gz http://search.maven.org/remotecontent?filepath=org/netpreserve/openwayback/openwayback-dist/2.2.0/openwayback-dist-2.2.0.tar.gz
 echo "Installing OpenWayback..."
-tar xzf openwayback-dist-2.2.0.tar.gz
+tar xzf /tmp/setup.$$/openwayback-dist-2.2.0.tar.gz
 rm -rf /var/lib/tomcat7/webapps/ROOT
 #cp target/openwayback-sample-overlay-2.0.0.BETA.1.war /var/lib/tomcat7/webapps/ROOT.war
 cp openwayback/openwayback-2.2.0.war /var/lib/tomcat7/webapps/ROOT.war
-cd / && rm -rf /tmp/openwayback
 echo "Restarting Tomcat..."
 service tomcat7 start
 
@@ -134,6 +129,7 @@ if [ -f /vagrant/ssh_public_key ]; then
 fi
 
 # all done
+rm -rf /tmp/setup.$$
 echo " "
 echo "Run Heritrix using the \`start_heritrix.sh' script."
 echo "It can be accessed via the web (https, self-signed cert) at:"
