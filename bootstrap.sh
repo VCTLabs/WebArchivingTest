@@ -117,7 +117,7 @@ while [ ! -f /var/lib/tomcat7/webapps/ROOT/WEB-INF/wayback.xml ]; do
 done
 # set up openwayback
 echo "Configuring OpenWayback..."
-sed -i.bak -e 's/\(wayback.url.host.default=\).*/\1wayback/' -e 's/\(wayback.archivedir.1=\).*/\1\/opt\/heritrix-3.2.0\/jobs\/job1/' -e 's/\(wayback.archivedir.2=\).*/\1\/opt\/heritrix-3.2.0\/jobs\/job2/' /var/lib/tomcat7/webapps/ROOT/WEB-INF/wayback.xml
+sed -i.bak -e 's/\(wayback.url.host.default=\).*/\1wayback/' -e 's/\(wayback.archivedir.1=\).*/\1\/var\/spool\/heritrix\/warcs\//' -e 's/\(wayback.archivedir.2=\).*/\1\/tmp\//' /var/lib/tomcat7/webapps/ROOT/WEB-INF/wayback.xml
 echo "Restarting Tomcat..."
 service tomcat7 restart
 
