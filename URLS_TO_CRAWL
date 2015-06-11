@@ -1,2 +1,6 @@
 # Enter a series of http or https URLs to crawl, one per line.
+# A hash mark indicates a comment
+# http://otakunopodcast.com/
+# http://donaldburr.com/
+# http://borgchat.net/
 http://vctlabs.com/
