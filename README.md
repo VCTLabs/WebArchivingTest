@@ -10,7 +10,17 @@ machine" style. It uses [Heritrix](https://webarchive.jira.com/wiki/display/Heri
 ## How do I use this?
 
 This is packaged in the form of a ready-to-run [Vagrant](https://www.vagrantup.com) instance.
-Simply install Vagrant, and type `vagrant up` while in this directory.
+
+To get this going:
+1. Install Vagrant.
+2. Edit the `Vagrantfile` located here.
+   * The one mandatory change is to set the `config.vm.network` line for the
+   `public_network`. Currently this is set to bridge to a physical network
+   interface, so that the VM can be accessed by a regular IP address on your
+   network. If you want this behavior, you must set the network interface
+   name (after the "`bridge =>`" statement.)
+   For Macs, this should look like `en0: Ethernet` (yes, including the space) and for Linux boxen, this should be a more normal-looking network interface like `eth0` or `wlan0`.
+   * The virtual interface's MAC address is `0A:B4:A0:A4:46:42`, so you may want to give it a static IP or something.
 
 ## Heritrix documentation notes
 
