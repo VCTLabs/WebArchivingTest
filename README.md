@@ -30,6 +30,7 @@ The main Heritrix documentation can be found
 Pages of particular note:
 * [Guide to using the Web UI](https://webarchive.jira.com/wiki/display/Heritrix/Web-based+User+Interface)
 * [Running your first crawl job](https://webarchive.jira.com/wiki/display/Heritrix/A+Quick+Guide+to+Running+Your+First+Crawl+Job)
+* [Heritrix API Guide](https://webarchive.jira.com/wiki/display/Heritrix/Heritrix+3.x+API+Guide#Heritrix3.xAPIGuide-BuildJobConfiguration) (you can control a running Heritrix with HTTP GET/POST requests. It even works with shell scripts with `curl`.)
 
 Notes/errata on the Heritrix configuration:
 * configuration file needs to be edited for each job
