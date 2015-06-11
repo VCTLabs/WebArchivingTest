@@ -1,0 +1,13 @@
+Not sure if these directives are needed:
+
+<property name="surtsSource">
+<bean class="org.archive.spring.ConfigString">
+<property name="value">
+<value>
+# example.com
+# http://www.example.edu/path1/
++http://(com,vctlabs,
+</value>
+</property> 
+</bean>
+</property>

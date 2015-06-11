@@ -2,10 +2,11 @@
 #
 # A hash mark indicates a comment
 #
-# To crawl an entire site, including subdomains, specify it as, e.g.
-# `example.com'
+# To crawl an entire site, including subdomains, specify the URL WITHOUT
+# a trailing slash, e.g. `http://example.com'
 #
-# To ONLY crawl a certain domain, specify it as, e.g. `foo.example.com'
+# To ONLY crawl a certain domain, add a trailing slash to the URL,
+# e.g. `http://foo.example.com/'
 #
 # More information here:
 # https://webarchive.jira.com/wiki/display/ARIH/Default+Crawl+Scope
@@ -17,5 +18,7 @@
 # http://otakunopodcast.com
 # http://donaldburr.com
 http://borgchat.net
+http://www.borgchat.net
 http://vctlabs.com
+http://www.vctlabs.com
 https://dl.dropbox.com

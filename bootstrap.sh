@@ -70,16 +70,20 @@ sleep 10
 echo "Setting up Heritrix job..."
 curl -qso /dev/null -d "createpath=crawler&action=create" -k -u admin:password --anyauth --location https://localhost:8443/engine
 echo "Configuring Heritrix job..."
-sed -i.bak \
-  -e 's/\(metadata.operatorContactUrl=\).*/\1http:\/\/vctlabs.com\//' \
-  -e '/URLS HERE/ r /vagrant/URLS_TO_CRAWL' \
-  -e '/example.example\/example/d' \
-  -e '/bean id.*acceptSurts/a\
-\<property name=\"decision\" value=\"ACCEPT\"\ /\>\
-\<property name=\"seedsAsSurtPrefixes\" value=\"true\" \/\>' \
-  -e '/WARCWriterProcessor/a\
-\<property name=\"directory\" value=\"\/var\/spool\/heritrix\/\" \/\>' \
-  /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
+#sed -i.bak \
+#  -e 's/\(metadata.operatorContactUrl=\).*/\1http:\/\/vctlabs.com\//' \
+#  -e '/URLS HERE/ r /vagrant/URLS_TO_CRAWL' \
+#  -e '/example.example\/example/d' \
+#  -e '/bean id.*acceptSurts/a\
+#\<property name=\"decision\" value=\"ACCEPT\"\ /\>\
+#\<property name=\"seedsAsSurtPrefixes\" value=\"true\" \/\>\
+#\<property name=\"alsoCheckVia\" value=\"false\" \/\>' \
+#  -e '/WARCWriterProcessor/a\
+#\<property name=\"directory\" value=\"\/var\/spool\/heritrix\/\" \/\>' \
+#  /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
+cp /vagrant/crawler-beans.cxml.example /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
+chown vagrant:vagrant /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
+chmod 644 /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
 mkdir -p /var/spool/heritrix
 chown vagrant:vagrant /var/spool/heritrix
 chmod 755 /var/spool/heritrix
