@@ -110,6 +110,9 @@ echo "Waiting for Tomcat to unpack WAR..."
 while [ ! -f /var/lib/tomcat7/webapps/ROOT/WEB-INF/wayback.xml ]; do
   sleep 1
 done
+# need to wait a bit more for it to finish
+sleep 10
+
 # set up openwayback
 echo "Configuring OpenWayback..."
 sed -i.bak -e 's/\(wayback.url.host.default=\).*/\1wayback/' -e 's/\(wayback.archivedir.1=\).*/\1\/var\/spool\/heritrix\/warcs\//' -e 's/\(wayback.archivedir.2=\).*/\1\/tmp\//' /var/lib/tomcat7/webapps/ROOT/WEB-INF/wayback.xml
