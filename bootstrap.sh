@@ -18,7 +18,13 @@ echo "$IPADDR wayback" >> /etc/hosts
 # install packages and stuff
 echo "Updating/installing packages..."
 apt-get -q=2 update
-apt-get -q=2 install -y build-essential git libdb-dev maven2 mosh openjdk-7-jdk tomcat7 tomcat7-docs tomcat7-admin tomcat7-examples vim w3m elinks screen # default-jdk
+apt-get -q=2 install -y build-essential curl git libdb-dev maven2 openjdk-7-jdk python-software-properties tomcat7 tomcat7-docs tomcat7-admin tomcat7-examples vim w3m elinks screen # default-jdk
+
+# install mosh
+echo "Installing mosh..."
+add-apt-repository ppa:keithw/mosh -y
+apt-get update
+apt-get install -y mosh
 
 # download heritrix
 echo "Downloading Heritrix..."
@@ -51,6 +57,30 @@ cat << _EOF_START_SH_ > /home/vagrant/start_heritrix.sh
 #!/bin/sh
 exec heritrix -a admin:password -b /
 _EOF_START_SH_
+
+# start up heritrix
+echo "Starting up heritrix..."
+su - vagrant /home/vagrant/start_heritrix.sh
+# give it some time to spin up
+sleep 10
+
+# set up heritrix job
+echo "Setting up Heritrix job..."
+curl -qso /dev/null -d "createpath=crawler&action=create" -k -u admin:password --anyauth --location https://localhost:8443/engine
+echo "Configuring Heritrix job..."
+sed -i.bak -e 's/\(metadata.operatorContactUrl=\).*/\1http:\/\/vctlabs.com\//' -e '/URLS HERE/a\
+http://otakunopodcast.com\
+http://donaldburr.com\
+http://vctlabs.com' -e '/example.example\/example/d' -e '/WARCWriterProcessor/a\
+\<property name=\"directory\" value=\"\/var\/spool\/heritrix\/\" \/\>' /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
+mkdir -p /var/spool/heritrix
+chown root:root /var/spool/heritrix
+chmod 777 /var/spool/heritrix
+echo "Building job configuration..."
+curl -qso /dev/null -d "action=build" -k -u admin:admin --anyauth --location https://localhost:8443/engine/job/crawler
+echo "Launching job..."
+curl -qso /dev/null -d "action=launch" -k -u admin:password --anyauth --location https://localhost:8443/engine/job/crawler
+curl -qso /dev/null -d "action=unpause" -k -u admin:password --anyauth --location https://localhost:8443/engine/job/crawler
 
 # set up tomcat
 echo "Setting up Tomcat..."
@@ -95,6 +125,12 @@ cp /vagrant/README.md /home/vagrant
 chown vagrant:vagrant /home/vagrant/README.md /home/vagrant/start_heritrix.sh
 chmod 644 /home/vagrant/README.md
 chmod 755 /home/vagrant/start_heritrix.sh
+
+# copy in ssh key
+if [ -f /vagrant/ssh_public_key ]; then
+  echo "Copying in ssh key..."
+  cat /vagrant/ssh_public_key >> /home/vagrant/.ssh/authorized_keys
+fi
 
 # all done
 echo " "
