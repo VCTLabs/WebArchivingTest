@@ -4,8 +4,8 @@
 
 This is a proof-of-concept of a Web Archiving appliance. It will archive
 (crawl) sites of your choosing, and will allow you to browse them "wayback
-machine" style. It uses Heritrix for the crawling/archiving and openwayback
-for the browsing.
+machine" style. It uses [Heritrix](https://webarchive.jira.com/wiki/display/Heritrix/Heritrix) for the crawling/archiving and
+[openwayback](https://github.com/iipc/openwayback) for the browsing.
 
 ## How do I use this?
 
