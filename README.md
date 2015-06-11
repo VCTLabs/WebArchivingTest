@@ -32,6 +32,13 @@ Pages of particular note:
 * [Running your first crawl job](https://webarchive.jira.com/wiki/display/Heritrix/A+Quick+Guide+to+Running+Your+First+Crawl+Job)
 * [Heritrix API Guide](https://webarchive.jira.com/wiki/display/Heritrix/Heritrix+3.x+API+Guide#Heritrix3.xAPIGuide-BuildJobConfiguration) (you can control a running Heritrix with HTTP GET/POST requests. It even works with shell scripts with `curl`.)
 
+The main OpenWayback documentation can be found
+[here](https://github.com/iipc/openwayback/wiki).
+
+Pages of particular note:
+* [How to install](https://github.com/iipc/openwayback/wiki/How-to-install)
+* [How to configure](https://github.com/iipc/openwayback/wiki/How-to-configure)
+
 Notes/errata on the Heritrix configuration:
 * configuration file needs to be edited for each job
   located in `/opt/heritrix-3.2.0/jobs/JOBNAME/crawler-beans.cxml`.
