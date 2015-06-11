@@ -60,6 +60,7 @@ _EOF_START_SH_
 
 # start up heritrix
 echo "Starting up heritrix..."
+. /etc/profile.d/heritrix.sh
 su - vagrant /home/vagrant/start_heritrix.sh
 # give it some time to spin up
 sleep 10
