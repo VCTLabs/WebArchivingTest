@@ -1,6 +1,17 @@
 # Enter a series of http or https URLs to crawl, one per line.
+#
 # A hash mark indicates a comment
-# http://otakunopodcast.com/
-# http://donaldburr.com/
-# http://borgchat.net/
-http://vctlabs.com/
+#
+# URLs without a trailing slash will match that URL plus all subdomains
+# (e.g. "http://example.com" matches example.com, www.example.com,
+# foo.example.com, etc.
+#
+# More information here:
+# https://webarchive.jira.com/wiki/display/Heritrix/Configuring+Jobs+and+Profiles
+# http://crawler.archive.org/articles/user_manual/usecases.html
+# https://webarchive.jira.com/wiki/display/Heritrix/How-To+Feed+URLs+in+bulk+to+a+crawler
+
+# http://otakunopodcast.com
+# http://donaldburr.com
+# http://borgchat.net
+http://vctlabs.com
