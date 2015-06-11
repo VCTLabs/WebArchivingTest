@@ -14,8 +14,8 @@
 # https://webarchive.jira.com/wiki/display/Heritrix/How-To+Feed+URLs+in+bulk+to+a+crawler
 # http://stackoverflow.com/questions/7628264/how-to-make-heritrix-to-continue-crawl-process-on-domains-found-and-are-not-in-s
 
-# otakunopodcast.com
-# donaldburr.com
-borgchat.net
-vctlabs.com
-dl.dropbox.com
+# http://otakunopodcast.com
+# http://donaldburr.com
+http://borgchat.net
+http://vctlabs.com
+https://dl.dropbox.com

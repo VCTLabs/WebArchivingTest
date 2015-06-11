@@ -70,8 +70,16 @@ sleep 10
 echo "Setting up Heritrix job..."
 curl -qso /dev/null -d "createpath=crawler&action=create" -k -u admin:password --anyauth --location https://localhost:8443/engine
 echo "Configuring Heritrix job..."
-sed -i.bak -e 's/\(metadata.operatorContactUrl=\).*/\1http:\/\/vctlabs.com\//' -e '/URLS HERE/ r /vagrant/URLS_TO_CRAWL' -e '/example.example\/example/d' -e '/WARCWriterProcessor/a\
-\<property name=\"directory\" value=\"\/var\/spool\/heritrix\/\" \/\>' /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
+sed -i.bak \
+  -e 's/\(metadata.operatorContactUrl=\).*/\1http:\/\/vctlabs.com\//' \
+  -e '/URLS HERE/ r /vagrant/URLS_TO_CRAWL' \
+  -e '/example.example\/example/d' \
+  -e '/bean id.*acceptSurts/a\
+\<property name=\"decision\" value=\"ACCEPT\"\ /\>\
+\<property name=\"seedsAsSurtPrefixes\" value=\"true\" \/\>' \
+  -e '/WARCWriterProcessor/a\
+\<property name=\"directory\" value=\"\/var\/spool\/heritrix\/\" \/\>' \
+  /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
 mkdir -p /var/spool/heritrix
 chown vagrant:vagrant /var/spool/heritrix
 chmod 755 /var/spool/heritrix
@@ -87,9 +95,13 @@ service tomcat7 stop
 # openwayback needs Java 7
 echo JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-i386 >> /etc/default/tomcat7
 # set hostname
-sed -i.bak -e '/Host name=/{N;N;s/$/\n\<Alias\>wayback\<\/Alias\>/}' /etc/tomcat7/server.xml
+sed -i.bak \
+  -e '/Host name=/{N;N;s/$/\n\<Alias\>wayback\<\/Alias\>/}' \
+  /etc/tomcat7/server.xml
 # add admin user
-sed -i.bak -e '/<tomcat-users>/a<user username="admin" password="password" roles="manager-gui,admin-gui"/>' /etc/tomcat7/tomcat-users.xml
+sed -i.bak \
+  -e '/<tomcat-users>/a<user username="admin" password="password" roles="manager-gui,admin-gui"/>' \
+  /etc/tomcat7/tomcat-users.xml
 
 # install openwayback
 echo "Downloading OpenWayback..."
@@ -112,7 +124,11 @@ sleep 10
 
 # set up openwayback
 echo "Configuring OpenWayback..."
-sed -i.bak -e 's/\(wayback.url.host.default=\).*/\1wayback/' -e 's/\(wayback.archivedir.1=\).*/\1\/var\/spool\/heritrix\/warcs\//' -e 's/\(wayback.archivedir.2=\).*/\1\/tmp\//' /var/lib/tomcat7/webapps/ROOT/WEB-INF/wayback.xml
+sed -i.bak \
+  -e 's/\(wayback.url.host.default=\).*/\1wayback/' \
+  -e 's/\(wayback.archivedir.1=\).*/\1\/var\/spool\/heritrix\/warcs\//' \
+  -e 's/\(wayback.archivedir.2=\).*/\1\/tmp\//' \
+  /var/lib/tomcat7/webapps/ROOT/WEB-INF/wayback.xml
 echo "Restarting Tomcat..."
 service tomcat7 restart
 
