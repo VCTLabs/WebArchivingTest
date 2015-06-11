@@ -54,7 +54,7 @@ service tomcat7 stop
 # openwayback needs Java 7
 echo JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-i386 >> /etc/default/tomcat7
 # set hostname
-sed -i.bak -e '/Host name=/{N;N;s/$/\n\<Alias\>wayback\<\/Alias\>/}' /etc/tomcat/server.xml
+sed -i.bak -e '/Host name=/{N;N;s/$/\n\<Alias\>wayback\<\/Alias\>/}' /etc/tomcat7/server.xml
 # add admin user
 sed -i.bak -e '/<tomcat-users>/a<user username="admin" password="password" roles="manager-gui,admin-gui"/>' /etc/tomcat7/tomcat-users.xml
 
