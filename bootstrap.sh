@@ -21,6 +21,7 @@ apt-get -q=2 update > /dev/null 2>&1
 apt-get -q=2 install -y avahi-daemon avahi-utils curl openjdk-7-jdk python-software-properties screen tomcat7 tomcat7-admin vim > /dev/null 2>&1
 
 # install avahi configs
+echo "Configuring avahi..."
 cp -a /vagrant/avahi_configs/*.service /etc/avahi/services
 chmod 644 /etc/avahi/services/*.service
 
