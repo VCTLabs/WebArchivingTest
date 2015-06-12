@@ -12,6 +12,8 @@ sha1verify() {
 
 # set hostname
 hostname wayback
+echo wayback > /etc/hostname
+sed -i.bak -e 's/precise32/wayback/' /etc/hosts
 IPADDR=`ifconfig eth1 | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'`
 echo "$IPADDR wayback" >> /etc/hosts
 
