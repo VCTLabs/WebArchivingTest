@@ -1,0 +1,18 @@
+<?xml version="1.0" standalone='no'?><!--*-nxml-*-->
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+
+<!--
+Text Record
+This sets arbitary key-value pairs, which are interpreted on a
+per-service manner. For _http._tcp services the valid keys are u
+(username), p (password) and path.
+-->
+
+<service-group>
+	<name replace-wildcards="yes">Tomcat Admin on %h</name>
+	<service>
+		<type>_http._tcp</type>
+    <port>8080</port>
+		<txt-record>path=/manager/html/</txt-record>
+	</service>
+</service-group>

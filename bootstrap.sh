@@ -18,13 +18,17 @@ echo "$IPADDR wayback" >> /etc/hosts
 # install packages and stuff
 echo "Updating/installing packages..."
 apt-get -q=2 update > /dev/null 2>&1
-apt-get -q=2 install -y curl openjdk-7-jdk python-software-properties screen tomcat7 tomcat7-admin vim > /dev/null 2>&1
+apt-get -q=2 install -y avahi-daemon avahi-utils curl openjdk-7-jdk python-software-properties screen tomcat7 tomcat7-admin vim > /dev/null 2>&1
+
+# install avahi configs
+cp -a /vagrant/avahi_configs/*.service /etc/avahi/services
+chmod 644 /etc/avahi/services/*.service
 
 # install mosh
 echo "Installing mosh..."
 echo "" | add-apt-repository ppa:keithw/mosh
-apt-get update > /dev/null 2>&1
-apt-get install -y mosh > /dev/null 2>&1
+apt-get -q=2 update > /dev/null 2>&1
+apt-get -q=2 install -y mosh > /dev/null 2>&1
 
 # download heritrix
 echo "Downloading Heritrix..."
@@ -65,6 +69,7 @@ HERITRIX_HOME="/opt/heritrix-3.2.0"
 JAVA_HOME="/usr/lib/jvm/java-1.7.0-openjdk-i386"
 IP_ADDRESS="/"
 PORT=8443
+HERITRIX_ADDITIONAL_OPTS=""
 _EOF_DEFAULTS_HERITRIX_
 echo "Starting up Heritrix..."
 service heritrix start
@@ -101,6 +106,11 @@ curl -qso /dev/null -d "action=unpause" -k -u admin:password --anyauth --locatio
 # set up tomcat
 echo "Setting up Tomcat..."
 service tomcat7 stop
+# install heritrix redirect stub
+mkdir -p /var/lib/tomcat7/webapps/heritrix
+cp -a /vagrant/heritrix_redirect.html /var/lib/tomcat7/webapps/heritrix/index.html
+chown -R tomcat7:tomcat7 /var/lib/tomcat7/webapps/heritrix
+chmod 644 /var/lib/tomcat7/webapps/heritrix/index.html
 # openwayback needs Java 7
 echo JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-i386 >> /etc/default/tomcat7
 # set hostname
