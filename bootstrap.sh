@@ -53,16 +53,21 @@ _EOF_PROFILE_SH_
 chmod 644 /etc/profile.d/heritrix.sh
 chown -R vagrant:vagrant /opt/heritrix-3.2.0
 
-# make handy startup script
-cat << _EOF_START_SH_ > /home/vagrant/start_heritrix.sh
-#!/bin/sh
-exec heritrix -a admin:password -b /
-_EOF_START_SH_
-
 # start up heritrix
-echo "Starting up heritrix..."
-. /etc/profile.d/heritrix.sh
-su - vagrant /home/vagrant/start_heritrix.sh
+echo "Installing Heritrix startup script..."
+cp /vagrant/heritrix_init_d.sh /etc/init.d/heritrix
+chmod 755 /etc/init.d/heritrix
+update-rc.d heritrix defaults
+cat << _EOF_DEFAULTS_HERITRIX_ > /etc/default/heritrix
+HERITRIX_USER="vagrant"
+HERITRIX_CREDENTIALS="admin:password"
+HERITRIX_HOME="/opt/heritrix-3.2.0"
+JAVA_HOME="/usr/lib/jvm/java-1.7.0-openjdk-i386"
+IP_ADDRESS="/"
+PORT=8443
+_EOF_DEFAULTS_HERITRIX_
+echo "Starting up Heritrix..."
+service heritrix start
 # give it some time to spin up
 sleep 10
 
@@ -70,18 +75,18 @@ sleep 10
 echo "Setting up Heritrix job..."
 curl -qso /dev/null -d "createpath=crawler&action=create" -k -u admin:password --anyauth --location https://localhost:8443/engine
 echo "Configuring Heritrix job..."
-#sed -i.bak \
-#  -e 's/\(metadata.operatorContactUrl=\).*/\1http:\/\/vctlabs.com\//' \
-#  -e '/URLS HERE/ r /vagrant/URLS_TO_CRAWL' \
-#  -e '/example.example\/example/d' \
-#  -e '/bean id.*acceptSurts/a\
-#\<property name=\"decision\" value=\"ACCEPT\"\ /\>\
-#\<property name=\"seedsAsSurtPrefixes\" value=\"true\" \/\>\
-#\<property name=\"alsoCheckVia\" value=\"false\" \/\>' \
-#  -e '/WARCWriterProcessor/a\
-#\<property name=\"directory\" value=\"\/var\/spool\/heritrix\/\" \/\>' \
-#  /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
-cp /vagrant/crawler-beans.cxml.example /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
+sed -i.bak \
+  -e 's/\(metadata.operatorContactUrl=\).*/\1http:\/\/vctlabs.com\//' \
+  -e '/URLS HERE/ r /vagrant/URLS_TO_CRAWL' \
+  -e '/example.example\/example/d' \
+  -e '/bean id.*acceptSurts/a\
+\<property name=\"decision\" value=\"ACCEPT\"\ /\>\
+\<property name=\"seedsAsSurtPrefixes\" value=\"true\" \/\>\
+\<property name=\"alsoCheckVia\" value=\"false\" \/\>' \
+  -e '/WARCWriterProcessor/a\
+\<property name=\"directory\" value=\"\/var\/spool\/heritrix\/\" \/\>' \
+  /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
+#cp /vagrant/crawler-beans.cxml.example /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
 chown vagrant:vagrant /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
 chmod 644 /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
 mkdir -p /var/spool/heritrix
@@ -136,11 +141,10 @@ sed -i.bak \
 echo "Restarting Tomcat..."
 service tomcat7 restart
 
-# copy in handy stuffs
+# copy in the README for reference
 cp /vagrant/README.md /home/vagrant
-chown vagrant:vagrant /home/vagrant/README.md /home/vagrant/start_heritrix.sh
+chown vagrant:vagrant /home/vagrant/README.md
 chmod 644 /home/vagrant/README.md
-chmod 755 /home/vagrant/start_heritrix.sh
 
 # copy in ssh key
 if [ -f /vagrant/ssh_public_key ]; then
@@ -151,18 +155,20 @@ fi
 # all done
 rm -rf /tmp/setup.$$
 echo " "
-echo "Run Heritrix using the \`start_heritrix.sh' script."
-echo "It can be accessed via the web (https, self-signed cert) at:"
+echo "All Done!"
+echo " "
+echo "Access the Heritrix web interface (https, self-signed cert) at:"
 echo "     https://$IPADDR:8443/"
-echo " "
-echo "The default username/password is \`admin:password'."
-echo "They can be changed in the \`start_heritrix.sh' script."
-echo " "
-echo "To access openwayback, browse to: (note: http, NOT https as above)"
-echo "     http://$IPADDR:8080/wayback/"
 echo " "
 echo "To manage tomcat, browse to"
 echo "      http://$IPADDR:8080/manager/html"
-echo "The default username/password is \`admin:password'."
+echo " "
+echo "The default username/password for both of the above is \`admin:password'."
+echo "They can be changed in the following locations:"
+echo "     Heritrix - \`/etc/default/heritrix'"
+echo "     Tomcat - \`/etc/tomcat7/tomcat-users.xml'"
+echo " "
+echo "To access openwayback, browse to: (note: http, NOT https as above)"
+echo "     http://$IPADDR:8080/wayback/"
 echo " "
 echo "Share And Enjoy!"
