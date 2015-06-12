@@ -62,7 +62,6 @@ INDENT_SPACING=50
 case "$1" in
 
 start)
-echo $IP_ADDRESS
 
   if [ -f "$PID_FILENAME" ]; then
     PID=`cat $PID_FILENAME`
