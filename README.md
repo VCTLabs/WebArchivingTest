@@ -31,6 +31,8 @@ Pages of particular note:
 * [Guide to using the Web UI](https://webarchive.jira.com/wiki/display/Heritrix/Web-based+User+Interface)
 * [Running your first crawl job](https://webarchive.jira.com/wiki/display/Heritrix/A+Quick+Guide+to+Running+Your+First+Crawl+Job)
 * [Heritrix API Guide](https://webarchive.jira.com/wiki/display/Heritrix/Heritrix+3.x+API+Guide#Heritrix3.xAPIGuide-BuildJobConfiguration) (you can control a running Heritrix with HTTP GET/POST requests. It even works with shell scripts with `curl`.)
+* [Processor Settings](https://webarchive.jira.com/wiki/display/Heritrix/Processor+Settings)
+* [Duplication Reduction Processors](https://webarchive.jira.com/wiki/display/Heritrix/Duplication+Reduction+Processors)
 
 The main OpenWayback documentation can be found
 [here](https://github.com/iipc/openwayback/wiki).
