@@ -93,6 +93,17 @@ sed -i.bak \
 \<property name=\"alsoCheckVia\" value=\"false\" \/\>' \
   -e '/WARCWriterProcessor/a\
 \<property name=\"directory\" value=\"\/var\/spool\/heritrix\/\" \/\>' \
+  -e '/bean id.*rescheduler/a\
+--\>\
+\<bean id=\"rescheduler\" class=\"org.archive.crawler.postprocessor.ReschedulingProcessor\"\>\
+\<!-- every day --\>\
+\<property name=\"rescheduleDelaySeconds\" value=\"86400\" \/\>\
+\<!-- every hour --\>\
+\<!-- \<property name=\"rescheduleDelaySeconds\" value=\"3600\" \/\> --\>\
+\<\/bean\>' \
+  -e '/ref.*bean.*disposition/a\
+\<ref bean=\"rescheduler\" \/\>' \
+  -e '/rescheduleDelaySeconds.*-1/ { N; d; }' \
   /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
 #cp /vagrant/crawler-beans.cxml.example /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
 chown vagrant:vagrant /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
