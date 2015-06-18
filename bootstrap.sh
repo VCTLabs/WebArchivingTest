@@ -20,7 +20,7 @@ echo "$IPADDR wayback" >> /etc/hosts
 # install packages and stuff
 echo "Updating/installing packages..."
 apt-get -q=2 update > /dev/null 2>&1
-apt-get -q=2 install -y avahi-daemon avahi-utils curl openjdk-7-jdk python-software-properties screen tomcat7 tomcat7-admin vim > /dev/null 2>&1
+apt-get -q=2 install -y avahi-daemon avahi-utils curl openjdk-7-jdk python-pip python-software-properties screen tomcat7 tomcat7-admin vim > /dev/null 2>&1
 
 # install avahi configs
 echo "Configuring avahi..."
@@ -130,6 +130,17 @@ curl -qso /dev/null -d "action=build" -k -u admin:admin --anyauth --location htt
 echo "Launching job..."
 curl -qso /dev/null -d "action=launch" -k -u admin:password --anyauth --location https://localhost:8443/engine/job/crawler
 curl -qso /dev/null -d "action=unpause" -k -u admin:password --anyauth --location https://localhost:8443/engine/job/crawler
+
+# install hapy
+# https://github.com/WilliamMayor/hapy
+#
+# NOTE: to disable the warning that you get because of the self-signed
+# ssl cert, insert this code in your Python script that uses hapy:
+#
+# import requests
+# requests.packages.urllib3.disable_warnings()
+echo "Installing Heritrix API python module..."
+pip install hapy-heritrix
 
 # set up tomcat
 echo "Setting up Tomcat..."

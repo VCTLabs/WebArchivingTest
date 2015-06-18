@@ -56,3 +56,18 @@ Notes/errata on the OpenWayback configuration:
   creating test jobs.
   * /opt/heritrix-3.2.0/jobs/job1
   * /opt/heritrix-3.2.0/jobs/job2
+
+## Python access to the Heritrix API
+
+As mentioned above, the Heritrix API can be accessed using standard
+HTTP GET/POST calls. A handy Python module that encapsulates these into
+a nice set of modules is [hapy](https://github.com/WilliamMayor/hapy).
+
+By default, you will get all manner of insecure HTTPS warnings, because
+of the Heritrix self-signed certificate. To suppress these, insert this
+code in your Python scripts that use the `hapi` module:
+
+```python
+import requests
+requests.packages.urllib3.disable_warnings()
+```
