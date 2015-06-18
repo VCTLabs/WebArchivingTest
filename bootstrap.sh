@@ -104,21 +104,29 @@ sed -i.bak \
   -e '/ref.*bean.*disposition/a\
 \<ref bean=\"rescheduler\" \/\>' \
   -e '/rescheduleDelaySeconds.*-1/ { N; d; }' \
-  -e '/ref.*bean=.*warcWriter/i \
-\<bean class=\"org.archive.modules.recrawl.ContentDigestHistoryLoader\" \/\>' \
-  -e '/ref.*bean=.*warcWriter/a \
-\<bean class=\"org.archive.modules.recrawl.ContentDigestHistoryStorer\" \/\>' \
-  -e '/CRAWL METADATA/i \
-\<!-- optional, will use the main bdb module if omitted, just like old dedup --\>\
-\<bean id=\"historyBdb\" class=\"org.archive.bdb.BdbModule\" autowire-candidate=\"false\"\>\
-\<property name=\"dir\" value=\"history\" \/\>\
-\<\/bean\>\
-\<bean id=\"contentDigestHistory\" class=\"org.archive.modules.recrawl.BdbContentDigestHistory\"\>\
-\<property name=\"bdbModule\"\>\
-\<ref bean=\"historyBdb\" \/\>\
-\<\/property\>\
-\<\/bean\>' \
   /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
+
+# de-duping seems a bit problematic, it is causing the crawler process
+# to stall... but maybe I'm not configuring it right... but let's disable
+# it for now
+#
+#sed -i.bak \
+#  -e '/ref.*bean=.*warcWriter/i \
+#\<bean class=\"org.archive.modules.recrawl.ContentDigestHistoryLoader\" \/\>' \
+#  -e '/ref.*bean=.*warcWriter/a \
+#\<bean class=\"org.archive.modules.recrawl.ContentDigestHistoryStorer\" \/\>' \
+#  -e '/CRAWL METADATA/i \
+#\<!-- optional, will use the main bdb module if omitted, just like old dedup --\>\
+#\<bean id=\"historyBdb\" class=\"org.archive.bdb.BdbModule\" autowire-candidate=\"false\"\>\
+#\<property name=\"dir\" value=\"history\" \/\>\
+#\<\/bean\>\
+#\<bean id=\"contentDigestHistory\" class=\"org.archive.modules.recrawl.BdbContentDigestHistory\"\>\
+#\<property name=\"bdbModule\"\>\
+#\<ref bean=\"historyBdb\" \/\>\
+#\<\/property\>\
+#\<\/bean\>' \
+#  /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
+
 #cp /vagrant/crawler-beans.cxml.example /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
 chown vagrant:vagrant /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
 chmod 644 /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
