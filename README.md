@@ -65,7 +65,7 @@ a nice set of modules is [hapy](https://github.com/WilliamMayor/hapy).
 
 By default, you will get all manner of insecure HTTPS warnings, because
 of the Heritrix self-signed certificate. To suppress these, insert this
-code in your Python scripts that use the `hapi` module:
+code in your Python scripts that use the `hapy` module. (cf. [Stack Overflow](http://stackoverflow.com/a/28002687/947870))
 
 ```python
 import requests
