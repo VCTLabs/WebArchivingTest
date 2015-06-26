@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+HERITRIX_USER="heritrix"
+HERITRIX_GROUP="heritrix"
+HERITRIX_HOME=/opt/heritrix-3.3.0-SNAPSHOT
+JAVA_HOME=/opt/jre1.8.0_45
+
 # handy dandy routine to verify SHA1 sums
 # usage: sha1verify <filename> <sha1>
 # exit 0 = success, 1 = fail
@@ -11,6 +16,7 @@ sha1verify() {
 }
 
 # set hostname
+echo "Setting hostname..."
 hostname wayback
 echo wayback > /etc/hostname
 sed -i.bak -e 's/precise32/wayback/' /etc/hosts
@@ -20,7 +26,7 @@ echo "$IPADDR wayback" >> /etc/hosts
 # install packages and stuff
 echo "Updating/installing packages..."
 apt-get -q=2 update > /dev/null 2>&1
-apt-get -q=2 install -y avahi-daemon avahi-utils curl openjdk-7-jdk python-pip python-software-properties screen tomcat7 tomcat7-admin vim > /dev/null 2>&1
+apt-get -q=2 install -y avahi-daemon avahi-utils curl python-pip python-software-properties screen tomcat7 tomcat7-admin vim > /dev/null 2>&1
 
 # install avahi configs
 echo "Configuring avahi..."
@@ -33,32 +39,44 @@ echo "" | add-apt-repository ppa:keithw/mosh
 apt-get -q=2 update > /dev/null 2>&1
 apt-get -q=2 install -y mosh > /dev/null 2>&1
 
+mkdir -p /opt
+mkdir -p /tmp/setup.$$
+
+# download Java
+echo "Downloading JRE..."
+wget --no-verbose -O /tmp/setup.$$/jre-8u45-linux-i586.tar.gz http://javadl.sun.com/webapps/download/AutoDL\?BundleId=106238
+echo "Installing JRE..."
+tar -C /opt -xf /tmp/setup.$$/jre-8u45-linux-i586.tar.gz
+
+# add heritrix config
+echo "Adding heritrix user and group..."
+groupadd $HERITRIX_GROUP
+useradd -g $HERITRIX_GROUP $HERITRIX_USER
+
 # download heritrix
 echo "Downloading Heritrix..."
-mkdir -p /tmp/setup.$$
-cd /tmp/setup.$$
-wget --no-verbose -O /tmp/setup.$$/heritrix-3.2.0-dist.tar.gz http://builds.archive.org/maven2/org/archive/heritrix/heritrix/3.2.0/heritrix-3.2.0-dist.tar.gz
-wget --no-verbose -O /tmp/setup.$$/SHA1SUM http://builds.archive.org/maven2/org/archive/heritrix/heritrix/3.2.0/heritrix-3.2.0-dist.tar.gz.sha1
+wget --no-verbose -O /tmp/setup.$$/heritrix-3.3.0-dist.tar.gz https://builds.archive.org/job/Heritrix-3/lastStableBuild/org.archive.heritrix\$heritrix/artifact/org.archive.heritrix/heritrix/3.3.0-20150504.230614-46/heritrix-3.3.0-20150504.230614-46-dist.tar.gz
+#wget --no-verbose -O /tmp/setup.$$/SHA1SUM http://builds.archive.org/maven2/org/archive/heritrix/heritrix/3.2.0/heritrix-3.2.0-dist.tar.gz.sha1
 #http://builds.archive.org/maven2/org/archive/heritrix/heritrix/3.2.0/heritrix-3.2.0-src.tar.gz
 #http://builds.archive.org/maven2/org/archive/heritrix/heritrix/3.2.0/heritrix-3.2.0-src.tar.gz.sha1
-if ! sha1verify "/tmp/setup.$$/heritrix-3.2.0-dist.tar.gz" "`cat /tmp/setup.$$/SHA1SUM`"; then
-  echo "ERROR: download failed! (checksum mismatch)"
-  exit 1
-fi
+#if ! sha1verify "/tmp/setup.$$/heritrix-3.2.0-dist.tar.gz" "`cat /tmp/setup.$$/SHA1SUM`"; then
+#  echo "ERROR: download failed! (checksum mismatch)"
+#  exit 1
+#fi
 
 # install heritrix
 echo "Installing Heritrix..."
 mkdir -p /opt
-tar -C /opt -xzf /tmp/setup.$$/heritrix-3.2.0-dist.tar.gz
-chmod 755 /opt/heritrix-3.2.0/bin/heritrix
+tar -C /opt -xzf /tmp/setup.$$/heritrix-3.3.0-dist.tar.gz
+chmod 755 ${HERITRIX_HOME}/bin/heritrix
 cat << _EOF_PROFILE_SH_ > /etc/profile.d/heritrix.sh
-export PATH=$PATH:/opt/heritrix-3.2.0/bin
-export JAVA_HOME=/usr/lib/jvm/default-java
-export HERITRIX_HOME=/opt/heritrix-3.2.0
+export PATH=\$PATH:$HERITRIX_HOME/bin
+export JAVA_HOME=$JAVA_HOME
+export HERITRIX_HOME=$HERITRIX_HOME
 export JAVA_OPTS=-Xmx1024M
 _EOF_PROFILE_SH_
 chmod 644 /etc/profile.d/heritrix.sh
-chown -R vagrant:vagrant /opt/heritrix-3.2.0
+chown -R $HERITRIX_USER:$HERITRIX_GROUP $HERITRIX_HOME
 
 # start up heritrix
 echo "Installing Heritrix startup script..."
@@ -66,10 +84,10 @@ cp /vagrant/heritrix_init_d.sh /etc/init.d/heritrix
 chmod 755 /etc/init.d/heritrix
 update-rc.d heritrix defaults
 cat << _EOF_DEFAULTS_HERITRIX_ > /etc/default/heritrix
-HERITRIX_USER="vagrant"
+HERITRIX_USER="$HERITRIX_USER"
 HERITRIX_CREDENTIALS="admin:password"
-HERITRIX_HOME="/opt/heritrix-3.2.0"
-JAVA_HOME="/usr/lib/jvm/java-1.7.0-openjdk-i386"
+HERITRIX_HOME="$HERITRIX_HOME"
+JAVA_HOME="$JAVA_HOME"
 IP_ADDRESS="/"
 PORT=8443
 HERITRIX_ADDITIONAL_OPTS=""
@@ -104,7 +122,7 @@ sed -i.bak \
   -e '/ref.*bean.*disposition/a\
 \<ref bean=\"rescheduler\" \/\>' \
   -e '/rescheduleDelaySeconds.*-1/ { N; d; }' \
-  /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
+  $HERITRIX_HOME/jobs/crawler/crawler-beans.cxml
 
 # de-duping seems a bit problematic, it is causing the crawler process
 # to stall... but maybe I'm not configuring it right... but let's disable
@@ -125,13 +143,13 @@ sed -i.bak \
 \<ref bean=\"historyBdb\" \/\>\
 \<\/property\>\
 \<\/bean\>' \
-  /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
+  $HERITRIX_HOME/jobs/crawler/crawler-beans.cxml
 
 #cp /vagrant/crawler-beans.cxml.example /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
-chown vagrant:vagrant /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
-chmod 644 /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
+chown $HERITRIX_USER:$HERITRIX_GROUP $HERITRIX_HOME/jobs/crawler/crawler-beans.cxml
+chmod 644 $HERITRIX_HOME/jobs/crawler/crawler-beans.cxml
 mkdir -p /var/spool/heritrix
-chown vagrant:vagrant /var/spool/heritrix
+chown $HERITRIX_USER:$HERITRIX_GROUP /var/spool/heritrix
 chmod 755 /var/spool/heritrix
 echo "Building job configuration..."
 curl -qso /dev/null -d "action=build" -k -u admin:admin --anyauth --location https://localhost:8443/engine/job/crawler
@@ -195,6 +213,8 @@ sed -i.bak \
   -e 's/\(wayback.archivedir.1=\).*/\1\/var\/spool\/heritrix\/warcs\//' \
   -e 's/\(wayback.archivedir.2=\).*/\1\/tmp\//' \
   /var/lib/tomcat7/webapps/ROOT/WEB-INF/wayback.xml
+echo "Configuring Tomcat to use Oracle java..."
+sed -i.bak -e "s/\(JAVA_HOME=\).*/\1$JAVA_HOME" /etc/default/tomcat7
 echo "Restarting Tomcat..."
 service tomcat7 restart
 
@@ -202,6 +222,9 @@ service tomcat7 restart
 cp /vagrant/README.md /home/vagrant
 chown vagrant:vagrant /home/vagrant/README.md
 chmod 644 /home/vagrant/README.md
+cp /vagrant/hapy_test.py /home/vagrant
+chown vagrant:vagrant /home/vagrant/hapy_test.py
+chmod 644 /home/vagrant/hapy_test.py
 
 # copy in ssh key
 if [ -f /vagrant/ssh_public_key ]; then
