@@ -47,6 +47,8 @@ if [ -f "$DEFAULT" ]; then
   . "$DEFAULT"
 fi
 
+export PATH=$JAVA_HOME/bin:$HERITRIX_HOME/bin:$PATH
+
 # Non-configurable stuff below
 HERITRIX_BINARY="heritrix"
 JAVA_APP_NAME="Heritrix"

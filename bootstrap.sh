@@ -3,7 +3,7 @@
 HERITRIX_USER="heritrix"
 HERITRIX_GROUP="heritrix"
 HERITRIX_HOME=/opt/heritrix-3.3.0-SNAPSHOT
-JAVA_HOME=/opt/jre1.8.0_45
+JAVA_HOME=/opt/jdk1.8.0_45
 
 # handy dandy routine to verify SHA1 sums
 # usage: sha1verify <filename> <sha1>
@@ -43,10 +43,11 @@ mkdir -p /opt
 mkdir -p /tmp/setup.$$
 
 # download Java
-echo "Downloading JRE..."
-wget --no-verbose -O /tmp/setup.$$/jre-8u45-linux-i586.tar.gz http://javadl.sun.com/webapps/download/AutoDL\?BundleId=106238
-echo "Installing JRE..."
-tar -C /opt -xf /tmp/setup.$$/jre-8u45-linux-i586.tar.gz
+echo "Downloading JDK..."
+wget --no-check-certificate --no-cookies --no-verbose --header "Cookie: oraclelicense=accept-securebackup-cookie" -O /tmp/setup.$$/jdk-8u45-linux-i586.tar.gz http://download.oracle.com/otn-pub/java/jdk/8u45-b14/jdk-8u45-linux-i586.tar.gz
+
+echo "Installing JDK..."
+tar -C /opt -xf /tmp/setup.$$/jdk-8u45-linux-i586.tar.gz
 
 # add heritrix config
 echo "Adding heritrix user and group..."
@@ -70,10 +71,10 @@ mkdir -p /opt
 tar -C /opt -xzf /tmp/setup.$$/heritrix-3.3.0-dist.tar.gz
 chmod 755 ${HERITRIX_HOME}/bin/heritrix
 cat << _EOF_PROFILE_SH_ > /etc/profile.d/heritrix.sh
-export PATH=\$PATH:$HERITRIX_HOME/bin
 export JAVA_HOME=$JAVA_HOME
-export HERITRIX_HOME=$HERITRIX_HOME
 export JAVA_OPTS=-Xmx1024M
+export HERITRIX_HOME=$HERITRIX_HOME
+export PATH=\$JAVA_HOME/bin:\$HERITRIX_HOME/bin:\$PATH
 _EOF_PROFILE_SH_
 chmod 644 /etc/profile.d/heritrix.sh
 chown -R $HERITRIX_USER:$HERITRIX_GROUP $HERITRIX_HOME
