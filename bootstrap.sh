@@ -239,7 +239,7 @@ chown vagrant:vagrant /home/vagrant/README.md
 chmod 644 /home/vagrant/README.md
 cp /vagrant/hapy_test.py /home/vagrant
 chown vagrant:vagrant /home/vagrant/hapy_test.py
-chmod 644 /home/vagrant/hapy_test.py
+chmod 755 /home/vagrant/hapy_test.py
 
 # copy in ssh key
 if [ -f /vagrant/ssh_public_key ]; then
