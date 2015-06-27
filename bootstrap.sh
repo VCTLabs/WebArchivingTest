@@ -185,7 +185,7 @@ pip install hapy-heritrix
 echo "Setting up Tomcat..."
 service tomcat7 stop
 echo "Configuring Tomcat to use Oracle java..."
-sed -i.bak -e "s/\(JAVA_HOME=\).*/\1$JAVA_HOME/" /etc/default/tomcat7
+sed -i.bak -e "s/\(JAVA_HOME=\).*/\1`echo $JAVA_HOME | sed -e 's/\//\\\//'`/g" /etc/default/tomcat7
 # install heritrix redirect stub
 mkdir -p /var/lib/tomcat7/webapps/heritrix
 cp -a /vagrant/heritrix_redirect.html /var/lib/tomcat7/webapps/heritrix/index.html
@@ -212,7 +212,6 @@ rm -rf /var/lib/tomcat7/webapps/ROOT
 cp openwayback/openwayback-2.2.0.war /var/lib/tomcat7/webapps/ROOT.war
 echo "Restarting Tomcat..."
 service tomcat7 start
-
 # wait for tomcat to unpack
 echo "Waiting for Tomcat to unpack WAR..."
 while [ ! -f /var/lib/tomcat7/webapps/ROOT/WEB-INF/wayback.xml ]; do
@@ -228,8 +227,6 @@ sed -i.bak \
   -e 's/\(wayback.archivedir.1=\).*/\1\/var\/spool\/heritrix\/warcs\//' \
   -e 's/\(wayback.archivedir.2=\).*/\1\/tmp\//' \
   /var/lib/tomcat7/webapps/ROOT/WEB-INF/wayback.xml
-echo "Configuring Tomcat to use Oracle java..."
-sed -i.bak -e "s/\(JAVA_HOME=\).*/\1`echo $JAVA_HOME | sed -e 's/\//\\\//'`/g" /etc/default/tomcat7
 echo "Restarting Tomcat..."
 service tomcat7 restart
 
