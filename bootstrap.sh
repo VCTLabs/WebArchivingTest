@@ -44,6 +44,7 @@ mkdir -p /tmp/setup.$$
 
 # download Java
 echo "Downloading JDK..."
+#curl --progress-bar -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" -o /tmp/setup.$$/jdk-7u79-linux-i586.tar.gz http://download.oracle.com/otn-pub/java/jdk/7u79-b15/jdk-7u79-linux-i586.tar.gz
 wget --no-check-certificate --no-cookies --no-verbose --header "Cookie: oraclelicense=accept-securebackup-cookie" -O /tmp/setup.$$/jdk-7u79-linux-i586.tar.gz http://download.oracle.com/otn-pub/java/jdk/7u79-b15/jdk-7u79-linux-i586.tar.gz
 
 echo "Installing JDK..."
