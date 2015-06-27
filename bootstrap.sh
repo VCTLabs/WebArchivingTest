@@ -78,10 +78,12 @@ echo "Installing Heritrix..."
 mkdir -p /opt
 tar -C /opt -xzf /tmp/setup.$$/heritrix-3.3.0-dist.tar.gz
 chmod 755 ${HERITRIX_HOME}/bin/heritrix
-echo "Generating Heritrix keystore..."
-(cd $HERITRIX_HOME && keytool -keystore adhoc.keystore -storepass password \
-   -keypass password -alias adhoc -genkey -keyalg RSA \
-   -dname "CN=Heritrix Ad-Hoc HTTPS Certificate" -validity 3650)
+# only needed for JDK 8, disabled since I decided to switch back to JDK 7
+# (but leaving it commented-out here in case we need it)
+#echo "Generating Heritrix keystore..."
+#(cd $HERITRIX_HOME && keytool -keystore adhoc.keystore -storepass password \
+#   -keypass password -alias adhoc -genkey -keyalg RSA \
+#   -dname "CN=Heritrix Ad-Hoc HTTPS Certificate" -validity 3650)
 cat << _EOF_PROFILE_SH_ > /etc/profile.d/heritrix.sh
 export JAVA_HOME=$JAVA_HOME
 export JAVA_OPTS=-Xmx1024M
