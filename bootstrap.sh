@@ -127,22 +127,24 @@ sed -i.bak \
 \<property name=\"alsoCheckVia\" value=\"false\" \/\>' \
   -e '/WARCWriterProcessor/a\
 \<property name=\"directory\" value=\"\/var\/spool\/heritrix\/\" \/\>' \
-  -e '/bean id.*rescheduler/a\
---\>\
-\<bean id=\"rescheduler\" class=\"org.archive.crawler.postprocessor.ReschedulingProcessor\"\>\
-\<!-- every day --\>\
-\<property name=\"rescheduleDelaySeconds\" value=\"86400\" \/\>\
-\<!-- every hour --\>\
-\<!-- \<property name=\"rescheduleDelaySeconds\" value=\"3600\" \/\> --\>\
-\<\/bean\>' \
-  -e '/ref.*bean.*disposition/a\
-\<ref bean=\"rescheduler\" \/\>' \
-  -e '/rescheduleDelaySeconds.*-1/ { N; d; }' \
   $HERITRIX_HOME/jobs/crawler/crawler-beans.cxml
-
-# de-duping seems a bit problematic, it is causing the crawler process
-# to stall... but maybe I'm not configuring it right... but let's disable
-# it for now
+#
+# rescheduler causes jobs to get stuck in "RUNNING" state
+# is this really how it works? disabling it for now
+#
+#sed -i.bak \
+#  -e '/bean id.*rescheduler/a\
+#--\>\
+#\<bean id=\"rescheduler\" class=\"org.archive.crawler.postprocessor.ReschedulingProcessor\"\>\
+#\<!-- every day --\>\
+#\<property name=\"rescheduleDelaySeconds\" value=\"86400\" \/\>\
+#\<!-- every hour --\>\
+#\<!-- \<property name=\"rescheduleDelaySeconds\" value=\"3600\" \/\> --\>\
+#\<\/bean\>' \
+#  -e '/ref.*bean.*disposition/a\
+#\<ref bean=\"rescheduler\" \/\>' \
+#  -e '/rescheduleDelaySeconds.*-1/ { N; d; }' \
+#  $HERITRIX_HOME/jobs/crawler/crawler-beans.cxml
 #
 sed -i.bak \
   -e '/ref.*bean=.*warcWriter/i \
