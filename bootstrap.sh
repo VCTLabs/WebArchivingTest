@@ -185,7 +185,6 @@ pip install hapy-heritrix
 echo "Setting up Tomcat..."
 service tomcat7 stop
 echo "Configuring Tomcat to use Oracle java..."
-JAVA_HOME_ESCAPED="`echo $JAVA_HOME | sed -e 's/\//\\\//g'`"
 sed -i.bak -e "s:\(JAVA_HOME=\).*:\1$JAVA_HOME:g" /etc/default/tomcat7
 # install heritrix redirect stub
 mkdir -p /var/lib/tomcat7/webapps/heritrix
