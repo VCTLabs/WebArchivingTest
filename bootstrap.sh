@@ -229,7 +229,7 @@ sed -i.bak \
   -e 's/\(wayback.archivedir.2=\).*/\1\/tmp\//' \
   /var/lib/tomcat7/webapps/ROOT/WEB-INF/wayback.xml
 echo "Configuring Tomcat to use Oracle java..."
-sed -i.bak -e "s/\(JAVA_HOME=\).*/\1$JAVA_HOME/" /etc/default/tomcat7
+sed -i.bak -e "s/\(JAVA_HOME=\).*/\1`echo $JAVA_HOME | sed -e 's/\//\\\//'`/g" /etc/default/tomcat7
 echo "Restarting Tomcat..."
 service tomcat7 restart
 
