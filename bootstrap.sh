@@ -239,9 +239,12 @@ service tomcat7 restart
 cp /vagrant/README.md /home/vagrant
 chown vagrant:vagrant /home/vagrant/README.md
 chmod 644 /home/vagrant/README.md
-cp /vagrant/hapy_test.py /home/vagrant
-chown vagrant:vagrant /home/vagrant/hapy_test.py
-chmod 755 /home/vagrant/hapy_test.py
+for SCRIPT in /vagrant/*.py; do
+  BASE=`basename $SCRIPT`
+  cp $SCRIPT /home/vagrant/$BASE
+  chown vagrant:vagrant /home/vagrant/$BASE
+  chmod 755 /home/vagrant/$BASE
+done
 
 # copy in ssh key
 if [ -f /vagrant/ssh_public_key ]; then
