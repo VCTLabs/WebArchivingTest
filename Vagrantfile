@@ -24,7 +24,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  config.vm.network "private_network", ip: "192.168.42.42"
+  # config.vm.network "private_network", ip: "192.168.42.42"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -47,7 +47,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # second digit must be an even number (0, 2, 4, 6, 8, a, c, e).  So
   # put something like "0a" in the MAC Address Prefix box in the random
   # MAC address generator.
-  #config.vm.network "public_network", :bridge => 'en0: Ethernet', :mac => "0AB4A0A44642"
+  config.vm.network "public_network", :bridge => 'en0: Ethernet', :mac => "0AB4A0A44642"
 
   # If true, then any SSH connections made will enable agent forwarding.
   # Default value: false
