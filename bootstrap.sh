@@ -48,6 +48,14 @@ wget --no-check-certificate --no-cookies --no-verbose --header "Cookie: oracleli
 
 echo "Installing JDK..."
 tar -C /opt -xf /tmp/setup.$$/jdk-8u45-linux-i586.tar.gz
+update-alternatives --install "/usr/bin/java" "java" "$JAVA_HOME/bin/java" 1
+update-alternatives --install "/usr/bin/javac" "javac" "$JAVA_HOME/bin/javac" 1
+update-alternatives --install "/usr/bin/javaws" "javaws" "$JAVA_HOME/bin/javaws" 1
+update-alternatives --install "/usr/bin/jps" "jps" "$JAVA_HOME/bin/jps" 1
+echo 1 |update-alternatives --config java
+echo 1 |update-alternatives --config javac
+echo 1 |update-alternatives --config javaws
+echo 1 |update-alternatives --config jps
 
 # add heritrix config
 echo "Adding heritrix user and group..."
@@ -70,6 +78,10 @@ echo "Installing Heritrix..."
 mkdir -p /opt
 tar -C /opt -xzf /tmp/setup.$$/heritrix-3.3.0-dist.tar.gz
 chmod 755 ${HERITRIX_HOME}/bin/heritrix
+echo "Generating Heritrix keystore..."
+cd $HERITRIX_HOME && keytool -keystore adhoc.keystore -storepass password \
+  -keypass password -alias adhoc -genkey -keyalg RSA \
+  -dname "CN=Heritrix Ad-Hoc HTTPS Certificate" -validity 3650
 cat << _EOF_PROFILE_SH_ > /etc/profile.d/heritrix.sh
 export JAVA_HOME=$JAVA_HOME
 export JAVA_OPTS=-Xmx1024M
@@ -172,13 +184,15 @@ pip install hapy-heritrix
 # set up tomcat
 echo "Setting up Tomcat..."
 service tomcat7 stop
+echo "Configuring Tomcat to use Oracle java..."
+sed -i.bak -e "s/\(JAVA_HOME=\).*/\1$JAVA_HOME/" /etc/default/tomcat7
 # install heritrix redirect stub
 mkdir -p /var/lib/tomcat7/webapps/heritrix
 cp -a /vagrant/heritrix_redirect.html /var/lib/tomcat7/webapps/heritrix/index.html
 chown -R tomcat7:tomcat7 /var/lib/tomcat7/webapps/heritrix
 chmod 644 /var/lib/tomcat7/webapps/heritrix/index.html
 # openwayback needs Java 7
-echo JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-i386 >> /etc/default/tomcat7
+echo JAVA_HOME=$JAVA_HOME >> /etc/default/tomcat7
 # set hostname
 sed -i.bak \
   -e '/Host name=/{N;N;s/$/\n\<Alias\>wayback\<\/Alias\>/}' \
@@ -215,7 +229,7 @@ sed -i.bak \
   -e 's/\(wayback.archivedir.2=\).*/\1\/tmp\//' \
   /var/lib/tomcat7/webapps/ROOT/WEB-INF/wayback.xml
 echo "Configuring Tomcat to use Oracle java..."
-sed -i.bak -e "s/\(JAVA_HOME=\).*/\1$JAVA_HOME" /etc/default/tomcat7
+sed -i.bak -e "s/\(JAVA_HOME=\).*/\1$JAVA_HOME/" /etc/default/tomcat7
 echo "Restarting Tomcat..."
 service tomcat7 restart
 
