@@ -3,7 +3,7 @@
 HERITRIX_USER="heritrix"
 HERITRIX_GROUP="heritrix"
 HERITRIX_HOME=/opt/heritrix-3.3.0-SNAPSHOT
-JAVA_HOME=/opt/jdk1.8.0_45
+JAVA_HOME=/opt/jdk1.7.0_79
 
 # handy dandy routine to verify SHA1 sums
 # usage: sha1verify <filename> <sha1>
@@ -44,10 +44,10 @@ mkdir -p /tmp/setup.$$
 
 # download Java
 echo "Downloading JDK..."
-wget --no-check-certificate --no-cookies --no-verbose --header "Cookie: oraclelicense=accept-securebackup-cookie" -O /tmp/setup.$$/jdk-8u45-linux-i586.tar.gz http://download.oracle.com/otn-pub/java/jdk/8u45-b14/jdk-8u45-linux-i586.tar.gz
+wget --no-check-certificate --no-cookies --no-verbose --header "Cookie: oraclelicense=accept-securebackup-cookie" -O /tmp/setup.$$/jdk-7u79-linux-i586.tar.gz http://download.oracle.com/otn-pub/java/jdk/7u79-b15/jdk-7u79-linux-i586.tar.gz
 
 echo "Installing JDK..."
-tar -C /opt -xf /tmp/setup.$$/jdk-8u45-linux-i586.tar.gz
+tar -C /opt -xf /tmp/setup.$$/jdk-7u79-linux-i586.tar.gz
 update-alternatives --install "/usr/bin/java" "java" "$JAVA_HOME/bin/java" 1
 update-alternatives --install "/usr/bin/javac" "javac" "$JAVA_HOME/bin/javac" 1
 update-alternatives --install "/usr/bin/javaws" "javaws" "$JAVA_HOME/bin/javaws" 1
@@ -79,9 +79,9 @@ mkdir -p /opt
 tar -C /opt -xzf /tmp/setup.$$/heritrix-3.3.0-dist.tar.gz
 chmod 755 ${HERITRIX_HOME}/bin/heritrix
 echo "Generating Heritrix keystore..."
-cd $HERITRIX_HOME && keytool -keystore adhoc.keystore -storepass password \
-  -keypass password -alias adhoc -genkey -keyalg RSA \
-  -dname "CN=Heritrix Ad-Hoc HTTPS Certificate" -validity 3650
+(cd $HERITRIX_HOME && keytool -keystore adhoc.keystore -storepass password \
+   -keypass password -alias adhoc -genkey -keyalg RSA \
+   -dname "CN=Heritrix Ad-Hoc HTTPS Certificate" -validity 3650)
 cat << _EOF_PROFILE_SH_ > /etc/profile.d/heritrix.sh
 export JAVA_HOME=$JAVA_HOME
 export JAVA_OPTS=-Xmx1024M
@@ -206,10 +206,10 @@ sed -i.bak \
 echo "Downloading OpenWayback..."
 wget --no-verbose -O /tmp/setup.$$/openwayback-dist-2.2.0.tar.gz http://search.maven.org/remotecontent?filepath=org/netpreserve/openwayback/openwayback-dist/2.2.0/openwayback-dist-2.2.0.tar.gz
 echo "Installing OpenWayback..."
-tar xzf /tmp/setup.$$/openwayback-dist-2.2.0.tar.gz
+tar -C /tmp/setup.$$ -xzf /tmp/setup.$$/openwayback-dist-2.2.0.tar.gz
 rm -rf /var/lib/tomcat7/webapps/ROOT
 #cp target/openwayback-sample-overlay-2.0.0.BETA.1.war /var/lib/tomcat7/webapps/ROOT.war
-cp openwayback/openwayback-2.2.0.war /var/lib/tomcat7/webapps/ROOT.war
+cp /tmp/setup.$$/openwayback/openwayback-2.2.0.war /var/lib/tomcat7/webapps/ROOT.war
 echo "Restarting Tomcat..."
 service tomcat7 start
 # wait for tomcat to unpack
