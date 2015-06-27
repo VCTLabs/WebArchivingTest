@@ -15,10 +15,12 @@
 # https://webarchive.jira.com/wiki/display/Heritrix/How-To+Feed+URLs+in+bulk+to+a+crawler
 # http://stackoverflow.com/questions/7628264/how-to-make-heritrix-to-continue-crawl-process-on-domains-found-and-are-not-in-s
 
-# http://otakunopodcast.com
-# http://donaldburr.com
-#http://borgchat.net
-#http://www.borgchat.net
+http://otakunopodcast.com
+http://www.otakunopodcast.com
+http://donaldburr.com
+http://www.donaldburr.com
+http://borgchat.net
+http://www.borgchat.net
 http://vctlabs.com
 http://www.vctlabs.com
 #https://dl.dropbox.com
