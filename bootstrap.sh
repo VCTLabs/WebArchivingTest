@@ -239,6 +239,9 @@ service tomcat7 restart
 cp /vagrant/README.md /home/vagrant
 chown vagrant:vagrant /home/vagrant/README.md
 chmod 644 /home/vagrant/README.md
+cp /vagrant/dot.bash_aliases /home/vagrant/.bash_aliases
+chown vagrant:vagrant /home/vagrant/.bash_aliases
+chmod 644 /home/vagrant/.bash_aliases
 for SCRIPT in /vagrant/*.py; do
   BASE=`basename $SCRIPT`
   cp $SCRIPT /home/vagrant/$BASE
