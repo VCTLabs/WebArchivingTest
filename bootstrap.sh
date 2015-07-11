@@ -83,7 +83,7 @@ export JAVA_OPTS=-Xmx1024M
 export HERITRIX_HOME=$HERITRIX_HOME
 export PATH=\$JAVA_HOME/bin:\$HERITRIX_HOME/bin:\$PATH
 _EOF_PROFILE_SH_
-chmod 644 /etc/profile.d/heritrix.sh
+chmod 755 /etc/profile.d/heritrix.sh
 chown -R $HERITRIX_USER:$HERITRIX_GROUP $HERITRIX_HOME
 
 # start up heritrix
