@@ -44,8 +44,7 @@ mkdir -p /tmp/setup.$$
 
 # download Java
 echo "Downloading JDK..."
-#curl --progress-bar -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" -o /tmp/setup.$$/jdk-7u79-linux-i586.tar.gz http://download.oracle.com/otn-pub/java/jdk/7u79-b15/jdk-7u79-linux-i586.tar.gz
-wget --no-check-certificate --no-cookies --no-verbose --header "Cookie: oraclelicense=accept-securebackup-cookie" -O /tmp/setup.$$/jdk-7u79-linux-i586.tar.gz http://download.oracle.com/otn-pub/java/jdk/7u79-b15/jdk-7u79-linux-i586.tar.gz
+wget --progress=dot:giga --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" -O /tmp/setup.$$/jdk-7u79-linux-i586.tar.gz http://download.oracle.com/otn-pub/java/jdk/7u79-b15/jdk-7u79-linux-i586.tar.gz
 
 echo "Installing JDK..."
 tar -C /opt -xf /tmp/setup.$$/jdk-7u79-linux-i586.tar.gz
@@ -65,14 +64,7 @@ useradd -g $HERITRIX_GROUP $HERITRIX_USER
 
 # download heritrix
 echo "Downloading Heritrix..."
-wget --no-verbose -O /tmp/setup.$$/heritrix-3.3.0-dist.tar.gz https://builds.archive.org/job/Heritrix-3/lastStableBuild/org.archive.heritrix\$heritrix/artifact/org.archive.heritrix/heritrix/3.3.0-20150504.230614-46/heritrix-3.3.0-20150504.230614-46-dist.tar.gz
-#wget --no-verbose -O /tmp/setup.$$/SHA1SUM http://builds.archive.org/maven2/org/archive/heritrix/heritrix/3.2.0/heritrix-3.2.0-dist.tar.gz.sha1
-#http://builds.archive.org/maven2/org/archive/heritrix/heritrix/3.2.0/heritrix-3.2.0-src.tar.gz
-#http://builds.archive.org/maven2/org/archive/heritrix/heritrix/3.2.0/heritrix-3.2.0-src.tar.gz.sha1
-#if ! sha1verify "/tmp/setup.$$/heritrix-3.2.0-dist.tar.gz" "`cat /tmp/setup.$$/SHA1SUM`"; then
-#  echo "ERROR: download failed! (checksum mismatch)"
-#  exit 1
-#fi
+wget --progress=dot:giga -O /tmp/setup.$$/heritrix-3.3.0-dist.tar.gz https://builds.archive.org/job/Heritrix-3/lastStableBuild/org.archive.heritrix\$heritrix/artifact/org.archive.heritrix/heritrix/3.3.0-20150504.230614-46/heritrix-3.3.0-20150504.230614-46-dist.tar.gz
 
 # install heritrix
 echo "Installing Heritrix..."
@@ -163,7 +155,6 @@ sed -i.bak \
 \<\/bean\>' \
   $HERITRIX_HOME/jobs/crawler/crawler-beans.cxml
 
-#cp /vagrant/crawler-beans.cxml.example /opt/heritrix-3.2.0/jobs/crawler/crawler-beans.cxml
 chown $HERITRIX_USER:$HERITRIX_GROUP $HERITRIX_HOME/jobs/crawler/crawler-beans.cxml
 chmod 644 $HERITRIX_HOME/jobs/crawler/crawler-beans.cxml
 mkdir -p /var/spool/heritrix
@@ -183,6 +174,7 @@ curl -qso /dev/null -d "action=unpause" -k -u admin:password --anyauth --locatio
 #
 # import requests
 # requests.packages.urllib3.disable_warnings()
+
 echo "Installing Heritrix API python module..."
 pip install hapy-heritrix
 
@@ -209,11 +201,10 @@ sed -i.bak \
 
 # install openwayback
 echo "Downloading OpenWayback..."
-wget --no-verbose -O /tmp/setup.$$/openwayback-dist-2.2.0.tar.gz http://search.maven.org/remotecontent?filepath=org/netpreserve/openwayback/openwayback-dist/2.2.0/openwayback-dist-2.2.0.tar.gz
+wget --progress=dot:giga -O /tmp/setup.$$/openwayback-dist-2.2.0.tar.gz http://search.maven.org/remotecontent?filepath=org/netpreserve/openwayback/openwayback-dist/2.2.0/openwayback-dist-2.2.0.tar.gz
 echo "Installing OpenWayback..."
 tar -C /tmp/setup.$$ -xzf /tmp/setup.$$/openwayback-dist-2.2.0.tar.gz
 rm -rf /var/lib/tomcat7/webapps/ROOT
-#cp target/openwayback-sample-overlay-2.0.0.BETA.1.war /var/lib/tomcat7/webapps/ROOT.war
 cp /tmp/setup.$$/openwayback/openwayback-2.2.0.war /var/lib/tomcat7/webapps/ROOT.war
 echo "Restarting Tomcat..."
 service tomcat7 start
