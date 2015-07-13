@@ -44,7 +44,7 @@ mkdir -p /tmp/setup.$$
 
 # download Java
 echo "Downloading JDK..."
-wget --progress=dot:giga --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" -O /tmp/setup.$$/jdk-7u79-linux-i586.tar.gz http://download.oracle.com/otn-pub/java/jdk/7u79-b15/jdk-7u79-linux-i586.tar.gz
+wget --progress=bar:force --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" -O /tmp/setup.$$/jdk-7u79-linux-i586.tar.gz http://download.oracle.com/otn-pub/java/jdk/7u79-b15/jdk-7u79-linux-i586.tar.gz
 
 echo "Installing JDK..."
 tar -C /opt -xf /tmp/setup.$$/jdk-7u79-linux-i586.tar.gz
@@ -64,7 +64,7 @@ useradd -g $HERITRIX_GROUP $HERITRIX_USER
 
 # download heritrix
 echo "Downloading Heritrix..."
-wget --progress=dot:giga -O /tmp/setup.$$/heritrix-3.3.0-dist.tar.gz https://builds.archive.org/job/Heritrix-3/lastStableBuild/org.archive.heritrix\$heritrix/artifact/org.archive.heritrix/heritrix/3.3.0-20150504.230614-46/heritrix-3.3.0-20150504.230614-46-dist.tar.gz
+wget --progress=bar:force -O /tmp/setup.$$/heritrix-3.3.0-dist.tar.gz https://builds.archive.org/job/Heritrix-3/lastStableBuild/org.archive.heritrix\$heritrix/artifact/org.archive.heritrix/heritrix/3.3.0-20150504.230614-46/heritrix-3.3.0-20150504.230614-46-dist.tar.gz
 
 # install heritrix
 echo "Installing Heritrix..."
@@ -201,7 +201,7 @@ sed -i.bak \
 
 # install openwayback
 echo "Downloading OpenWayback..."
-wget --progress=dot:giga -O /tmp/setup.$$/openwayback-dist-2.2.0.tar.gz http://search.maven.org/remotecontent?filepath=org/netpreserve/openwayback/openwayback-dist/2.2.0/openwayback-dist-2.2.0.tar.gz
+wget --progress=bar:force -O /tmp/setup.$$/openwayback-dist-2.2.0.tar.gz http://search.maven.org/remotecontent?filepath=org/netpreserve/openwayback/openwayback-dist/2.2.0/openwayback-dist-2.2.0.tar.gz
 echo "Installing OpenWayback..."
 tar -C /tmp/setup.$$ -xzf /tmp/setup.$$/openwayback-dist-2.2.0.tar.gz
 rm -rf /var/lib/tomcat7/webapps/ROOT
